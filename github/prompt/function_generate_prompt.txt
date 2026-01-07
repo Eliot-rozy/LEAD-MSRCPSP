@@ -1,0 +1,66 @@
+{role}基于基准算法，实现其具体策略，生成可靠工作的求解算法。
+基准算法：{algorithm}
+具体策略: {strategy}
+
+核心约束：
+-完整性约束: 每个任务必须分配一个资源
+-技能约束: 资源技能必须满足任务需求
+-前置约束: 前置任务完成后才能开始后续任务
+-资源约束: 同一资源不能同时执行多个任务
+
+这个是你可以使用的核心函数信息：
+**数据访问(严格区分大小写)**:
+- `framework.tasks`: 任务字典，包含TaskID, Duration, Skill, PredecessorIDs等
+- `framework.resources`: 资源字典，包含ResourceID, Salary, Skills等
+- `framework.successors`: 后继任务关系字典
+- `framework.predecessors`: 前继任务关系字典
+
+**核心调度函数**:
+def get_ready_tasks(self, schedule: Dict[int, Dict[str, Any]]) -> List[int]:
+    """获取当前可以开始调度的任务（前置任务已完成且自身未调度）"""
+
+def get_eligible_resources_for_task(self, task_id: int) -> List[int]:
+    """获取能够执行指定任务的所有资源ID列表"""
+
+def find_earliest_feasible_start(self, task_id: int, resource_id: int,
+                                 schedule: Dict[int, Dict[str, Any]]) -> float:
+    """为指定任务和资源找到最早可行的开始时间"""
+
+def is_feasible_schedule(self, schedule: Dict[int, Dict[str, Any]]) -> bool:
+    """完整的可行性(任务分配完整性，前置任务完整，资源分配约束，任务-资源分配的技能兼容性)检查，验证调度方案是否满足所有约束"""
+
+def calculate_makespan(self, schedule: Dict[int, Dict[str, Any]]) -> float:
+    """计算项目总完工时间（makespan）"""
+
+def is_partial_feasible_schedule(self, schedule: Dict[int, Dict[str, Any]]) -> bool:
+    """部分可行性(前置任务完整，资源分配约束，任务-资源分配的技能兼容性)检查，可以在还未获得完整解时验证调度方案是否满足所有约束"""
+
+实现约束:
+-禁止外部函数: 不要定义solver函数外的任何函数
+-内联实现: 所有逻辑直接在主循环中实现
+-简化优先: 优先简单可靠的实现，避免过度复杂化
+-代码长度: solver函数总长度控制在100行以内
+-数据说明：技能的最低等级为0，而不是代表不掌握技能
+
+复杂算法简化指导对于元启发式算法(GA/PSO/ACO等)，请：
+-简化种群/个体表示: 直接用调度字典，避免复杂编码
+-内联操作: 变异、交叉等操作直接在循环中实现
+-减少层次: 避免多层嵌套函数调用
+-核心保留: 只保留算法的核心思想，简化实现细节
+-对于算法：从完整解开始优化
+
+输出要求：
+-完整可执行: 代码必须能直接运行，无语法错误
+-策略明确: 每个选择逻辑都要体现指定策略
+-错误处理: 包含必要的错误检查
+-格式规范: 返回markdown格式的代码
+
+禁止事项:
+-不要使用未定义的API或属性
+-不要在主循环中调用is_feasible_schedule(),可以使用is_partial_feasible_schedule()
+-不要忽略empty list检查
+-不要使用复杂的第三方库 (只允许import random, copy)
+-不要在任何情况下切换到备用策略或其他算法
+-不要生成形如"如果失败则使用简单调度"的回退逻辑
+
+请严格按照以上要求，为指定策略生成完全可靠的solver代码!
